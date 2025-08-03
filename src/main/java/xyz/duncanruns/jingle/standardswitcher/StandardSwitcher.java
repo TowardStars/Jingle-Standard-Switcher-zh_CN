@@ -7,7 +7,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import xyz.duncanruns.jingle.Jingle;
 import xyz.duncanruns.jingle.JingleAppLaunch;
 import xyz.duncanruns.jingle.gui.JingleGUI;
-import xyz.duncanruns.jingle.instance.OpenedInstance;
+import xyz.duncanruns.jingle.instance.StandardSettings;
 import xyz.duncanruns.jingle.plugin.PluginEvents;
 import xyz.duncanruns.jingle.plugin.PluginManager;
 import xyz.duncanruns.jingle.util.FileUtil;
@@ -70,13 +70,13 @@ public class StandardSwitcher {
         PluginEvents.MAIN_INSTANCE_CHANGED.register(standardSwitcher::reload);
     }
 
-    private static void setGlobalFile(OpenedInstance instance, Path newPath) throws IOException {
-        FileUtil.writeString(instance.instancePath.resolve("config").resolve("mcsr").resolve("standardsettings.global"), newPath.toString());
+    private static void setGlobalFile(Path instancePath, Path newPath) throws IOException {
+        FileUtil.writeString(instancePath.resolve("config").resolve("mcsr").resolve("standardsettings.global"), newPath.toString());
     }
 
     private void switchToAnotherFileButtonPress() {
-        OpenedInstance instance = Jingle.getMainInstance().orElse(null);
-        if (instance == null) {
+        Path instancePath = Jingle.getLatestInstancePath().orElse(null);
+        if (instancePath == null) {
             reload();
             return;
         }
@@ -96,7 +96,7 @@ public class StandardSwitcher {
         Path newPath = FOLDER.resolve(ans + ".json");
 
         try {
-            setGlobalFile(instance, newPath);
+            setGlobalFile(instancePath, newPath);
         } catch (Exception e) {
             Jingle.logError("Failed to set standardsettings.global!", e);
             JOptionPane.showMessageDialog(this.mainPanel, "Failed to set standardsettings.global! (Check logs)", "Jingle Standard Switcher: Failed to copy", JOptionPane.ERROR_MESSAGE);
@@ -107,8 +107,8 @@ public class StandardSwitcher {
     }
 
     private void createNewFileButtonPress() {
-        OpenedInstance instance = Jingle.getMainInstance().orElse(null);
-        if (instance == null) {
+        Path instancePath = Jingle.getLatestInstancePath().orElse(null);
+        if (instancePath == null) {
             reload();
             return;
         }
@@ -162,7 +162,7 @@ public class StandardSwitcher {
         }
 
         try {
-            setGlobalFile(instance, newPath);
+            setGlobalFile(instancePath, newPath);
         } catch (Exception e) {
             Jingle.logError("Failed to set standardsettings.global!", e);
             JOptionPane.showMessageDialog(this.mainPanel, "Failed to set standardsettings.global! (Check logs)", "Jingle Standard Switcher: Failed to copy", JOptionPane.ERROR_MESSAGE);
@@ -173,16 +173,16 @@ public class StandardSwitcher {
     }
 
     public void reload() {
-        OpenedInstance instance = Jingle.getMainInstance().orElse(null);
+        Path instancePath = Jingle.getLatestInstancePath().orElse(null);
         whatsWrongLabel.setVisible(false);
         instancePanel.setVisible(false);
-        if (instance == null) {
+        if (instancePath == null) {
             warn("Please open an instance!");
             return;
         }
 
         try {
-            usedFilePath = instance.standardSettings.getUsedFilePath();
+            usedFilePath = new StandardSettings(instancePath).getUsedFilePath();
         } catch (Exception e) {
             Jingle.logError("Failed to get used standard settings path for the instance!", e);
             warn("Failed to get standard settings path! (Check logs)");
@@ -191,7 +191,7 @@ public class StandardSwitcher {
 
         boolean exists = Files.exists(usedFilePath);
         boolean isManaged = usedFilePath.getParent().toAbsolutePath().equals(FOLDER);
-        boolean isGlobal = !instance.instancePath.resolve("config").resolve("mcsr").resolve("standardsettings.json").toAbsolutePath().equals(usedFilePath.toAbsolutePath());
+        boolean isGlobal = !instancePath.resolve("config").resolve("mcsr").resolve("standardsettings.json").toAbsolutePath().equals(usedFilePath.toAbsolutePath());
 
         this.instancePanel.setVisible(true);
 
