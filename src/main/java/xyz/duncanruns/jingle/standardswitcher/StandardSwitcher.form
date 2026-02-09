@@ -26,7 +26,7 @@
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Please open an instance!"/>
+                  <text value="请打开一个游戏实例！"/>
                 </properties>
               </component>
               <grid id="e7fce" binding="instancePanel" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -42,7 +42,7 @@
                       <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <text value="Current Standard Settings File: (Unknown)"/>
+                      <text value="当前Standard Settings 文件：“（未知）"/>
                     </properties>
                   </component>
                   <component id="c64d1" class="javax.swing.JButton" binding="createNewFileButton" default-binding="true">
@@ -50,7 +50,7 @@
                       <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <text value="Create New File"/>
+                      <text value="创建新文件"/>
                     </properties>
                   </component>
                   <component id="3a3e2" class="javax.swing.JLabel">
@@ -59,7 +59,7 @@
                     </constraints>
                     <properties>
                       <foreground color="-65536"/>
-                      <text value="Please ensure that the in-game standard settings menu is closed before switching!"/>
+                      <text value="在选择之前请确保游戏内的standard setting菜单是关闭的！"/>
                     </properties>
                   </component>
                   <component id="d55e3" class="javax.swing.JButton" binding="switchToAnotherFileButton" default-binding="true">
@@ -67,7 +67,7 @@
                       <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <text value="Switch to Another File"/>
+                      <text value="选择另一个文件"/>
                     </properties>
                   </component>
                 </children>
@@ -91,7 +91,7 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Open Standard Switcher Folder"/>
+                  <text value="打开 Standard Switcher 文件夹"/>
                 </properties>
               </component>
             </children>

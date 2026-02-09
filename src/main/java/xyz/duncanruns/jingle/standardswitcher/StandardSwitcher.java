@@ -85,13 +85,13 @@ public class StandardSwitcher {
 
         List<String> existingFileNames = Arrays.stream(Optional.ofNullable(FOLDER.toFile().list()).orElse(new String[]{})).filter(s -> s.endsWith(".json")).map(nameCleaner).collect(Collectors.toList());
         if (existingFileNames.isEmpty()) {
-            JOptionPane.showMessageDialog(this.mainPanel, "There are no standard settings files stored with standard switcher!", "Jingle Standard Switcher: No files", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this.mainPanel, "Standard Switcher中没有存放任何standard settings文件。", "Jingle Standard Switcher: 没有文件", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         String current = nameCleaner.apply(usedFilePath.getFileName().toString());
         current = existingFileNames.contains(current) ? current : existingFileNames.get(0);
-        Object ans = JOptionPane.showInputDialog(this.mainPanel, "Select a file:", "Jingle Standard Switcher: Select file", JOptionPane.QUESTION_MESSAGE, null, existingFileNames.toArray(), current);
+        Object ans = JOptionPane.showInputDialog(this.mainPanel, "选择一个文件：", "Jingle Standard Switcher: 选择文件", JOptionPane.QUESTION_MESSAGE, null, existingFileNames.toArray(), current);
         if (ans == null) return;
         Path newPath = FOLDER.resolve(ans + ".json");
 
@@ -99,7 +99,7 @@ public class StandardSwitcher {
             setGlobalFile(instancePath, newPath);
         } catch (Exception e) {
             Jingle.logError("Failed to set standardsettings.global!", e);
-            JOptionPane.showMessageDialog(this.mainPanel, "Failed to set standardsettings.global! (Check logs)", "Jingle Standard Switcher: Failed to copy", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this.mainPanel, "创建standardsettings.global文件失败了！ （请检查日志）", "Jingle Standard Switcher: 复制失败", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -117,7 +117,7 @@ public class StandardSwitcher {
 
         List<String> existingFileNames = Arrays.stream(Optional.ofNullable(FOLDER.toFile().list()).orElse(new String[]{})).filter(s -> s.endsWith(".json")).map(nameCleaner).collect(Collectors.toList());
 
-        Function<String, String> asker = warning -> JOptionPane.showInputDialog(this.mainPanel, warning + "Your current standard settings will be copied, enter a new name for this standard settings config:", "Jingle Standard Switcher: Create New File", JOptionPane.QUESTION_MESSAGE);
+        Function<String, String> asker = warning -> JOptionPane.showInputDialog(this.mainPanel, warning + "您当前实例的Standard Settings配置将会被复制，请为该配置输入新名称：", "Jingle Standard Switcher: 创建新文件", JOptionPane.QUESTION_MESSAGE);
         Function<String, Integer> wrongChecker = s -> {
             if (s.isEmpty()) return 1; // Empty
             if (existingFileNames.stream().anyMatch(s::equalsIgnoreCase)) return 2; // Already exists
@@ -130,13 +130,13 @@ public class StandardSwitcher {
         while (ans != null && (issue = wrongChecker.apply(ans)) > 0) {
             switch (issue) {
                 case 1:
-                    ans = asker.apply("Please enter a name!\n");
+                    ans = asker.apply("请输入一个名称！\n");
                     break;
                 case 2:
-                    ans = asker.apply("A file of this name already exists!\n");
+                    ans = asker.apply("当前文件名已存在！\n");
                     break;
                 case 3:
-                    ans = asker.apply("File name is invalid!\n");
+                    ans = asker.apply("文件名无效！\n");
                     break;
             }
         }
@@ -149,7 +149,7 @@ public class StandardSwitcher {
             s = FileUtil.readString(oldPath);
         } catch (Exception e) {
             Jingle.logError("Failed to read standard settings file!", e);
-            JOptionPane.showMessageDialog(this.mainPanel, "Failed to read standard settings file! (Check logs)", "Jingle Standard Switcher: Failed to copy", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this.mainPanel, "读取Standard Settings文件失败了！（请检查日志）", "Jingle Standard Switcher: 复制失败", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -157,7 +157,7 @@ public class StandardSwitcher {
             FileUtil.writeString(newPath, s);
         } catch (Exception e) {
             Jingle.logError("Failed to write standard settings file!", e);
-            JOptionPane.showMessageDialog(this.mainPanel, "Failed to write standard settings file! (Check logs)", "Jingle Standard Switcher: Failed to copy", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this.mainPanel, "写入Standard Settings文件失败了！（请检查日志）", "Jingle Standard Switcher: 复制失败", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -165,7 +165,7 @@ public class StandardSwitcher {
             setGlobalFile(instancePath, newPath);
         } catch (Exception e) {
             Jingle.logError("Failed to set standardsettings.global!", e);
-            JOptionPane.showMessageDialog(this.mainPanel, "Failed to set standardsettings.global! (Check logs)", "Jingle Standard Switcher: Failed to copy", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this.mainPanel, "创建standardsettings.global文件失败了！（请检查日志）", "Jingle Standard Switcher: 复制失败", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -177,7 +177,7 @@ public class StandardSwitcher {
         whatsWrongLabel.setVisible(false);
         instancePanel.setVisible(false);
         if (instancePath == null) {
-            warn("Please open an instance!");
+            warn("请打开一个游戏实例！");
             return;
         }
 
@@ -185,7 +185,7 @@ public class StandardSwitcher {
             usedFilePath = new StandardSettings(instancePath).getUsedFilePath();
         } catch (Exception e) {
             Jingle.logError("Failed to get used standard settings path for the instance!", e);
-            warn("Failed to get standard settings path! (Check logs)");
+            warn("获取您standard settings文件的路径失败了！（请检查日志）");
             return;
         }
 
@@ -196,14 +196,14 @@ public class StandardSwitcher {
         this.instancePanel.setVisible(true);
 
         if (!exists) {
-            this.currentFileLabel.setText("Current Standard Settings File: (Does Not Exist)");
+            this.currentFileLabel.setText("当前Standard Settings文件：不存在");
         } else if (!isGlobal) {
-            this.currentFileLabel.setText("Current Standard Settings File: Non-global");
+            this.currentFileLabel.setText("当前Standard Settings文件：非全局");
         } else if (isManaged) {
-            this.currentFileLabel.setText("Current Standard Settings File: " + usedFilePath.getFileName().toString());
+            this.currentFileLabel.setText("当前Standard Settings文件：" + usedFilePath.getFileName().toString());
         } else {
             String string = usedFilePath.toString();
-            this.currentFileLabel.setText("Current Standard Settings File: " + (string.length() > 50 ? ("..." + string.substring(string.length() - 47)) : string));
+            this.currentFileLabel.setText("当前Standard Settings文件：" + (string.length() > 50 ? ("..." + string.substring(string.length() - 47)) : string));
         }
     }
 
@@ -238,24 +238,24 @@ public class StandardSwitcher {
         scrollPane1.setViewportView(panel1);
         panel1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         whatsWrongLabel = new JLabel();
-        whatsWrongLabel.setText("Please open an instance!");
+        whatsWrongLabel.setText("请打开一个游戏实例！");
         panel1.add(whatsWrongLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         instancePanel = new JPanel();
         instancePanel.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(instancePanel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         instancePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         currentFileLabel = new JLabel();
-        currentFileLabel.setText("Current Standard Settings File: (Unknown)");
+        currentFileLabel.setText("当前Standard Settings 文件：“（未知）");
         instancePanel.add(currentFileLabel, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         createNewFileButton = new JButton();
-        createNewFileButton.setText("Create New File");
+        createNewFileButton.setText("创建新文件");
         instancePanel.add(createNewFileButton, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label1 = new JLabel();
         label1.setForeground(new Color(-65536));
-        label1.setText("Please ensure that the in-game standard settings menu is closed before switching!");
+        label1.setText("在选择之前请确保游戏内的standard setting菜单是关闭的！");
         instancePanel.add(label1, new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         switchToAnotherFileButton = new JButton();
-        switchToAnotherFileButton.setText("Switch to Another File");
+        switchToAnotherFileButton.setText("选择另一个文件");
         instancePanel.add(switchToAnotherFileButton, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         panel1.add(spacer1, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
@@ -263,7 +263,7 @@ public class StandardSwitcher {
         panel2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 20, 0), -1, -1));
         panel1.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         openStandardSwitcherFolderButton = new JButton();
-        openStandardSwitcherFolderButton.setText("Open Standard Switcher Folder");
+        openStandardSwitcherFolderButton.setText("打开 Standard Switcher 文件夹");
         panel1.add(openStandardSwitcherFolderButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 

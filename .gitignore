@@ -43,3 +43,4 @@ bin/
 
 # Jingle
 /.idea
+.gitignore
